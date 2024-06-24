@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Property Details</h1>
+        <div class="property-details">
+            <h2>{{ villa.first_name }} {{ villa.last_name }}</h2>
+            <p>Email: {{ villa.email }}</p>
+            <p>Phone: {{ villa.phone }}</p>
+            <p>Location: {{ villa.location }}</p>
+            <p>Property Type: {{ villa.property_type }}</p>
+            <p>Rooms: {{ villa.rooms }}</p>
+            <p>Heard About: {{ villa.heard_about }}</p>
+            <p>Description: {{ villa.description }}</p>
+            
+            {% if villa.link %}
+            <p>Link: <a href="{{ villa.link }}" target="_blank">{{ villa.link }}</a></p>
+            {% endif %}
+            
+            <div class="property-photos">
+                <h3>Photos:</h3>
+                {% for photo in villa.photos %}
+                    <img src="{{ url_for('static', filename='villa_photos_of_customer/' ~ photo.filename) }}" alt="Property Photo" style="width:200px;height:200px;">
+                {% endfor %}
+            </div>
+        </div>
+        
+        <a href="{{ url_for('view_properties') }}">Back to Properties</a>
+    </div>
+</body>
+</html>

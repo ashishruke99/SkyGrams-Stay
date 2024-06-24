@@ -1,0 +1,15 @@
+skygram_stays/
+    app.py
+    templates/
+        base.html
+        explore.html
+        our_destination.html
+        list_our_property.html
+        about_us.html
+        contact_us.html
+        login.html
+    static/
+        css/
+            style.css
+        js/
+            script.js

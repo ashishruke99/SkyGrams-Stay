@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #f4f4f4;
+            padding-top: 60px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            transition: width 0.3s ease;
+            z-index: 2;
+        }
+        .sidebar.hidden {
+            width: 50px;
+        }
+        .sidebar.hidden .admin-options {
+            display: none;
+        }
+        .sidebar button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+        }
+        .sidebar button:hover {
+            background-color: #45a049;
+        }
+        .content {
+            margin-left: 240px; /* Adjusted margin */
+            padding: 20px;
+            flex: 1;
+            transition: margin-left 0.3s ease;
+        }
+        .content.minimized {
+            margin-left: 50px;
+        }
+        .menu-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: none;
+            color: #4CAF50;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 3;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+        .menu-btn-top {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 2;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .search-container {
+            float: right;
+            margin-bottom: 10px;
+        }
+        .search-container input[type=text] {
+            padding: 6px;
+            margin-top: 8px;
+            margin-right: 16px;
+            border: none;
+            font-size: 17px;
+        }
+        .search-container button {
+            padding: 6px;
+            margin-top: 8px;
+            margin-right: 16px;
+            border: none;
+            font-size: 17px;
+            cursor: pointer;
+        }
+        .no-results {
+            color: red;
+            font-weight: bold;
+        }
+        .guest-info {
+            margin-left: 10px;
+        }
+        .property-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px;
+            text-align: center;
+        }
+        .property-box img {
+            max-width: 100%;
+            height: auto;
+        }
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar" id="sidebar">
+        <h2 class="admin-options">Admin Options</h2>
+        <button class="admin-options" onclick="toggleSection('customerInfo')">View Customer Information</button>
+        <button class="admin-options" onclick="toggleSection('addProperty')">Add Property</button>
+        <button class="admin-options" onclick="toggleSection('addEvent')">Add Event</button>
+        <button class="admin-options" onclick="toggleSection('guestInfo')">Guest Customer Information</button>
+        <button class="admin-options" onclick="toggleSection('viewProperties')">View Properties</button>
+    </div>
+    <div class="content" id="content">
+        <div id="customerInfo" class="customer-info">
+            <h2>Customer Information</h2>
+            <div class="search-container">
+                <form method="POST" action="{{ url_for('admin_dashboard') }}">
+                    <input type="text" id="search_key" name="search_key" placeholder="Search..." value="{{ search_key }}">
+                    <button type="submit">Search</button>
+                    <button type="button" onclick="clearSearch()">Clear</button>
+                </form>
+            </div>
+            {% if customers %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Date of Birth</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer[0] }}</td>
+                        <td>{{ customer[1] }}</td>
+                        <td>{{ customer[2] }}</td>
+                        <td>{{ customer[3] }}</td>
+                        <td>{{ customer[4] }}</td>
+                        <td>{{ customer[5] }}</td>
+                        <td>{{ customer[6] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="no-results">No results found.</p>
+            {% endif %}
+        </div>
+
+        <div id="guestInfo" class="guest-info" style="display: none;">
+            <h2>Guest Customer Information</h2>
+            <table id="guestTable">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Place to Visit</th>
+                    <th>Check-in Date</th>
+                    <th>Check-out Date</th>
+                    <th>Adults</th>
+                    <th>Children</th>
+                    <th>Infants</th>
+                </tr>
+                {% for guest in guest_customers %}
+                <tr>
+                    <td>{{ guest[1] }}</td> <!-- Name -->
+                    <td>{{ guest[2] }}</td> <!-- Email -->
+                    <td>{{ guest[3] }}</td> <!-- Mobile -->
+                    <td>{{ guest[4] }}</td> <!-- Place to Visit -->
+                    <td>{{ guest[5] }}</td> <!-- Check-in Date -->
+                    <td>{{ guest[6] }}</td> <!-- Check-out Date -->
+                    <td>{{ guest[7] }}</td> <!-- Adults -->
+                    <td>{{ guest[8] }}</td> <!-- Children -->
+                    <td>{{ guest[9] }}</td> <!-- Infants -->
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    
+        <div id="viewProperties" class="view-properties" style="display: none;">
+            <div class="container mt-5">
+                <div class="row">
+                    {% for villa in villas %}
+                        <div class="col-md-4">
+                            <div class="property-box">
+                                <span class="delete-button" data-villa-id="{{ villa.id }}">&times;</span>
+                                <h3>{{ villa.first_name }}</h3>
+                                {% if villa.photos %}
+                                    <img src="{{ url_for('static', filename='villa_photos_of_customer/' ~ villa.photos[0].filename) }}" alt="Property Image">
+                                {% endif %}
+                                <a href="{{ url_for('view_property', villa_id=villa.id) }}" class="btn btn-primary mt-3">View Details</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete this property information?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            <form id="deleteForm" method="POST">
+                                <input type="hidden" id="villaIdInput" name="villa_id">
+                                <button type="submit" class="btn btn-danger">Yes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+
+        
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+     
+        
+    <script>
+        var activeSection = null; // Variable to track the active section
+
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            var content = document.getElementById("content");
+            if (sidebar.classList.contains("hidden")) {
+                sidebar.classList.remove("hidden");
+                content.classList.remove("minimized");
+            } else {
+                sidebar.classList.add("hidden");
+                content.classList.add("minimized");
+            }
+        }
+
+        function toggleSection(sectionId) {
+            var sections = document.querySelectorAll(".content > div");
+            sections.forEach(function (section) {
+                section.style.display = "none";
+            });
+
+            var section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = "block";
+                activeSection = section;
+            }
+        }
+
+
+        function clearSearch() {
+            document.getElementById('search_key').value = '';
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Bind click event to delete button in each property box
+            $('.delete-button').on('click', function() {
+                var villaId = $(this).data('villa-id');
+                $('#confirmDelete').data('villa-id', villaId); // Attach villa ID to confirm delete button
+            });
+    
+            // Bind click event to confirm delete button in delete modal
+            $('#confirmDelete').on('click', function() {
+                var villaId = $(this).data('villa-id'); // Retrieve villa ID from confirm delete button data
+                $.ajax({
+                    type: 'POST',
+                    url: '/delete_villa',
+                    data: { villa_id: villaId }, // Send villa ID in the request data
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Remove the property box element from the DOM
+                            $('.property-box[data-villa-id="' + villaId + '"]').closest('.col-md-4').remove();
+                            $('#deleteModal').modal('hide'); // Hide the modal after successful deletion
+                        } else {
+                            alert('Failed to delete villa: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error deleting villa:', error);
+                        alert('Failed to delete villa. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>

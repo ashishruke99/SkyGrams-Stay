@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Explore</h1>
+<p>Join SkyGram Stays as a host and list your property. Reach a global audience and earn by sharing your space with travelers.</p>
+{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <a class="navbar-brand" href="#">SkyGram Stays</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
+        <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
+            <li class="scroll"><a href="{{ url_for('explore') }}">Explore</a></li>
+            <li class="scroll"><a href="{{ url_for('our_destination') }}">Our Destination</a></li>
+            <li class="scroll"><a href="{{ url_for('list_your_property') }}">List Your Property</a></li>
+            <li class="scroll"><a href="{{ url_for('about_us') }}">About Us</a></li>
+            <li class="scroll"><a href="{{ url_for('contact_us') }}">Contact Us</a></li>
+            <li class="login-button-container scroll"><a href="{{ url_for('login') }}">Login</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="image-slider">
+    <button class="prev">&#10094;</button>
+    <div class="slides">
+        <div class="slide">
+            <img src="{{ url_for('static', filename='img/01.jpg') }}" alt="Slide 1">
+            <div class="slider-text">Welcome to SkyGram Stays</div>
+        </div>
+        <div class="slide">
+            <img src="{{ url_for('static', filename='img/02.jpg') }}" alt="Slide 2">
+            <div class="slider-text">Discover Our Amazing Villas</div>
+        </div>
+        <div class="slide">
+            <img src="{{ url_for('static', filename='img/03.jpg') }}" alt="Slide 3">
+            <div class="slider-text">Book Your Stay Now</div>
+        </div>
+    </div>
+    <button class="next">&#10095;</button>
+</div>
+
+<div class="explore-section">
+    {% block explore %}
+    {% endblock %}
+</div>
+
+<style>
+
+</style>
+
+<script>
+    let slideIndex = 0;
+    const slides = document.querySelector('.slides');
+    const slideElements = document.querySelectorAll('.slide');
+    const totalSlides = slideElements.length;
+
+    document.querySelector('.next').addEventListener('click', () => {
+        slideIndex = (slideIndex + 1) % totalSlides;
+        updateSlidePosition();
+    });
+
+    document.querySelector('.prev').addEventListener('click', () => {
+        slideIndex = (slideIndex - 1 + totalSlides) % totalSlides;
+        updateSlidePosition();
+    });
+
+    function updateSlidePosition() {
+        const offset = -slideIndex * 100;
+        slides.style.transform = `translateX(${offset}%)`;
+    }
+
+    setInterval(() => {
+        slideIndex = (slideIndex + 1) % totalSlides;
+        updateSlidePosition();
+    }, 3000);
+</script>
+{% endblock %}

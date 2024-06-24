@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow: auto; /* Add this to allow scrolling */
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+        }
+
+        .logo-container img {
+            width: 200px;
+            height: auto;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Ensures readability */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            animation: slideIn 1s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .about-header h1 {
+            font-size: 36px;
+            color: #333;
+        }
+
+        .about-header h2 {
+            font-size: 28px;
+            color: #555;
+        }
+
+        .about-section {
+            margin-bottom: 40px;
+        }
+
+        .about-section h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .about-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .about-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .about-column {
+            padding: 20px;
+        }
+
+        .about-column:nth-child(2) {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        .about-column h2 {
+            color: #007bff;
+        }
+
+        .about-column p {
+            color: #444;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (min-width: 768px) {
+            .about-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .about-column {
+                flex: 1;
+            }
+        }
+
+        .team-container {
+            text-align: center;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+            min-height: 400px; /* Add a minimum height to ensure the container doesn't collapse */
+        }
+
+        .team-container h2 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .team-members {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-wrap: wrap; /* Use flex-wrap to allow team members to wrap to the next line */
+        }
+
+        .team-member {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            max-width: 300px;
+            border: 2px solid #40e0d0;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9); /* Ensures readability */
+        }
+
+        .team-member img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .team-member h3 {
+            font-size: 22px;
+            color: #333;
+            margin: 10px 0 5px;
+        }
+
+        .team-member h4 {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .team-member p {
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .team-members {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        .background-slideshow {
+            position: absolute;
+            top:0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .background-slideshow img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: slideShow 20s infinite;
+            opacity: 1;
+            z-index: -1;
+            animation-delay: 0s;
+        }
+
+        .background-slideshow img:nth-child(2) {
+            animation-delay: 6.66s;
+        }
+
+        .background-slideshow img:nth-child(3) {
+            animation-delay: 13.32s;
+        }
+
+        @keyframes slideShow {
+            0% {
+                transform: translateX(0);
+            }
+            33% {
+                transform: translateX(-100%);
+            }
+            66% {
+                transform: translateX(-200%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>    <nav class="navbar">
+    <a class="navbar-brand" href="#">SkyGram Stays</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="login-button-container">
+        {% if 'user_id' in session %}
+            <div class="user-icon">
+                <button><img src="{{ random_image_url }}" alt="User Icon"></button>
+                <div class="user-dropdown">
+                    <a href="#">Hi {{ session['first_name'] }} {{ session['last_name'] }}</a>
+                    <a href="#">Edit Profile</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+    </div>
+    <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
+        <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
+            <li class="scroll"><a href="{{ url_for('explore') }}">Explore</a></li>
+            <li class="scroll"><a href="{{ url_for('our_destination') }}">Our Destination</a></li>
+            <li class="scroll"><a href="{{ url_for('list_your_property') }}">List Your Property</a></li>
+            <li class="scroll"><a href="{{ url_for('about_us') }}">About Us</a></li>
+            <li class="scroll"><a href="{{ url_for('contact_us') }}">Contact Us</a></li>
+            <li class="login-button-container scroll"><a href="{{ url_for('login') }}">Login</a></li>
+        </ul>
+    </div>
+</nav>
+
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='static\img\logo.jpg') }}" alt="Logo">
+    </div>
+    <div class="background-slideshow">
+        <img src="{{ url_for('static', filename='img/02.jpg') }}" alt="Background Image 1">
+        <img src="{{ url_for('static', filename='img/01.jpg') }}" alt="Background Image 2">
+        <img src="{{ url_for('static', filename='img/03.jpg') }}" alt="Background Image 3">
+    </div>
+    <div class="about-container">
+        <div class="about-header">
+            <h1>About Us</h1>
+            <h2>Learn more about our company and mission</h2>
+        </div>
+        <div class="about-content">
+            <div class="about-column">
+                <div class="about-section">
+                    <h2>Our Philosophy</h2>
+                    <p>SkyGram Stays was founded on the belief that every traveller deserves the opportunity to explore the world in style, without compromising on quality or convenience. Whether you're seeking a tranquil beachside retreat, a vibrant urban escape, or an adventure in the heart of nature,we're here to make your dreams a reality.</p>
+                    </div>
+                    <div class="about-section">
+                    <h2>Our Promise</h2>
+                    <p>When you choose SkyGram Stays, you’re not just booking a place to stay – you’re embarking on an adventure curated with care and attention to detail. Whether you’re traveling solo, with family, or with friends, we’re committed to helping you create memories that last a lifetime.</p>
+                    </div>
+                    </div>
+                    <div class="about-column">
+                    <div class="about-section">
+                    <h2>Our Vision</h2>
+                    <p>At SkyGram Stays, our mission is to redefine the vacation rental experience by providing exceptional properties, personalized service, and unforgettable moments for every guest. We aim to inspire exploration, foster connections, and create cherished memories that last a lifetime.</p>
+                    </div>
+                    <div class="about-section">
+                    <h2>Our Mission</h2>
+                    <p>Our vision at SkyGram Stays is to become the premier choice for discerning travelers seeking unparalleled luxury, comfort, and convenience in their vacation accommodations. We envision a future where every guest feels like a cherished member of the SkyGram Stays family, and where our commitment to excellence sets the standard for the industry. Through innovation, integrity, and a relentless dedication to customer satisfaction, we strive to elevate the art of travel and transform ordinary vacations into extraordinary adventures.</p>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="team-container">
+                    <h2>Meet Our Team</h2>
+                    <div class="team-members">
+                    <div class="team-member">
+                    <img src="{{ url_for('static', filename='img/team1.jpg') }}" alt="Team Member 1">
+                    <h3>Nirbhay Shah</h3>
+                    <h4>Head of Design</h4>
+                    <p>Our head of design, Nirbhay Shah, holds a degree from a prestigious university in Pune. His career adventure has led him down an enthralling route that has taken him from the colorful landscapes of Vietnam to the bustling cityscape of Mumbai and the peaceful serenity of Alibaug. Today, Nirbhay proudly oversees an established architectural practice in Pune, bringing a wealth of knowledge and a global perspective to every project.</p>
+                    </div>
+                    <div class="team-member">
+                    <img src="{{ url_for('static', filename='img/team 2.jpg') }}" alt="Team Member 2">
+                    <h3>Ayush Palesha</h3>
+                    <h4>Operations and Legal Head</h4>
+                    <p>In his role as SkyGram Stays' operations and legal head, Ayush Palesha diligently manages the business's ongoing operations and legal issues. Ayush has a strong foundation in civil engineering and brings to his position significant expertise in managing large-scale projects and ensuring compliance with all relevant regulations.</p>
+                    </div>
+                    <div class="team-member">
+                    <img src="{{ url_for('static', filename='img/team3.jpg') }}" alt="Team Member 3">
+                    <h3>Manav Nibjiya</h3>
+                    <h4>Finance and Management Head</h4>
+                    <p>At SkyGram Stays, Manav Nibjiya takes on the position of Finance and Management Head, where he plays a vital role in managing the organization's finances and general management. Manav is able to ensure the financial stability and strategic management of SkyGram Stays by using his special blend of technical and business abilities. He is committed to streamlining operations inside the business and maximizing resource allocation.</p>
+                    </div>
+                    </div>
+                    </div>
+                    <p>Join SkyGram Stays as a host and list your property. Reach a global audience and earn by sharing your space with travelers.</p>
+                    </body>
+                    </html>
+              

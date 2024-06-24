@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guest Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .back-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .back-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Guest Information</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Place</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Adults</th>
+                <th>Children</th>
+                <th>Infants</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plan in plans %}
+            <tr>
+                <td>{{ plan[0] }}</td>
+                <td>{{ plan[1] }}</td>
+                <td>{{ plan[2] }}</td>
+                <td>{{ plan[3] }}</td>
+                <td>{{ plan[4] }}</td>
+                <td>{{ plan[5] }}</td>
+                <td>{{ plan[6] }}</td>
+                <td>{{ plan[7] }}</td>
+                <td>{{ plan[8] }}</td>
+                <td>{{ plan[9] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/" class="back-btn">Back to Admin Dashboard</a>
+</body>
+</html>

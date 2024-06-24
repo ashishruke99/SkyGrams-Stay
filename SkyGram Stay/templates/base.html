@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyGram Stays</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    <style>
+        .login-button-container {
+            position: relative;
+            display: inline-block;
+            left: 92%;
+        }
+
+        .user-icon {
+            position: relative;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 5px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #f2f2f2;
+        }
+
+        .user-icon:hover .user-dropdown {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-button-container">
+        {% if 'user_id' in session %}
+            <div class="user-icon">
+                <button><img src="{{ random_image_url }}" alt="User Icon"></button>
+                <div class="user-dropdown">
+                    <a href="#">Hi {{ session['first_name'] }} {{ session['last_name'] }}</a>
+                    <a href="#">Edit Profile</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+    </div>
+    
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('explore') }}">Explore</a></li>
+                <li><a href="{{ url_for('our_destination') }}">Our Destination</a></li>
+                <li><a href="{{ url_for('list_your_property') }}">List Our Property</a></li>
+                <li><a href="{{ url_for('about_us') }}">About Us</a></li>
+                <li><a href="{{ url_for('contact_us') }}">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
