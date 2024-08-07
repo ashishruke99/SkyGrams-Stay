@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Add New Property</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        function addRoom() {
+            const roomContainer = document.getElementById('room-container');
+            const roomIndex = document.querySelectorAll('.room-group').length;
+            const roomGroup = document.createElement('div');
+            roomGroup.className = 'room-group';
+
+            roomGroup.innerHTML = `
+                <div class="form-group">
+                    <label for="room_photos_${roomIndex}">Room Photo:</label>
+                    <input type="file" class="form-control-file" id="room_photos_${roomIndex}" name="room_photos" required>
+                </div>
+                <div class="form-group">
+                    <label for="room_descriptions_${roomIndex}">Room Description:</label>
+                    <textarea class="form-control" id="room_descriptions_${roomIndex}" name="room_descriptions" required></textarea>
+                </div>
+            `;
+            roomContainer.appendChild(roomGroup);
+        }
+
+        function addFAQ() {
+            const faqContainer = document.getElementById('faq-container');
+            const faqIndex = document.querySelectorAll('.faq-group').length;
+            const faqGroup = document.createElement('div');
+            faqGroup.className = 'faq-group';
+
+            faqGroup.innerHTML = `
+                <div class="form-group">
+                    <label for="faq_question_${faqIndex}">Question ${faqIndex + 1}:</label>
+                    <textarea class="form-control" id="faq_question_${faqIndex}" name="faq_question" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="faq_answer_${faqIndex}">Answer ${faqIndex + 1}:</label>
+                    <textarea class="form-control" id="faq_answer_${faqIndex}" name="faq_answer" required></textarea>
+                </div>
+            `;
+            faqContainer.appendChild(faqGroup);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Property</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="{{ url_for('submitP') }}" method="POST" enctype="multipart/form-data">
+            <!-- Basic property details -->
+            <div class="form-group">
+                <label for="property_name">Property Name:</label>
+                <input type="text" class="form-control" id="property_name" name="property_name" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" class="form-control" id="location" name="location" required>
+            </div>
+            <div class="form-group">
+                <label for="guest_capacity">Guest Capacity:</label>
+                <input type="number" class="form-control" id="guest_capacity" name="guest_capacity" required>
+            </div>
+            <div class="form-group">
+                <label for="room_count">Room Count:</label>
+                <input type="number" class="form-control" id="room_count" name="room_count" required>
+            </div>
+            <div class="form-group">
+                <label for="baths">Baths:</label>
+                <input type="number" class="form-control" id="baths" name="baths" required>
+            </div>
+            <div class="form-group">
+                <label for="great_for">Great For:</label>
+                <input type="text" class="form-control" id="great_for" name="great_for" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <div class="form-group">
+                <label for="highlights">Highlights:</label>
+                <textarea class="form-control" id="highlights" name="highlights"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cover_photo">Cover Photo:</label>
+                <input type="file" class="form-control-file" id="cover_photo" name="cover_photo" required>
+            </div>
+            <div class="form-group">
+                <label for="location_description">Location Description:</label>
+                <textarea class="form-control" id="location_description" name="location_description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="location_link">Location Link:</label>
+                <input type="url" class="form-control" id="location_link" name="location_link">
+            </div>
+
+            <!-- Property Images -->
+            <div class="form-group">
+                <label for="images">Property Images:</label>
+                <input type="file" class="form-control-file" id="images" name="images" multiple>
+            </div>
+
+            <!-- Amenities -->
+            <div class="form-group">
+                <label for="amenities">Amenities:</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="amenity_wifi" name="amenity_name[]" value="WiFi">
+                    <label class="form-check-label" for="amenity_wifi">
+                        <img src="static/icons/wi-fi-amenity-sub-category-1683703563-p6e3z2.webp" alt="WiFi icon" style="width: 20px; height: 20px;"> WiFi
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="amenity_parking" name="amenity_name[]" value="Parking">
+                    <label class="form-check-label" for="amenity_parking">
+                        <img src="path_to_parking_icon.png" alt="Parking icon" style="width: 20px; height: 20px;"> Parking
+                    </label>
+                </div>
+            </div>
+            
+                <!-- Add more amenities as needed -->
+            </div>
+
+            <!-- Meal Options -->
+            <div class="form-group">
+                <label for="meal_images">Meal Options:</label>
+                <input type="file" class="form-control-file" id="meal_images" name="meal_images" multiple>
+                <textarea class="form-control" id="meal_description" name="meal_description" placeholder="Meal Description"></textarea>
+            </div>
+
+            <!-- Rooms -->
+            <div id="room-container">
+                <h3>Rooms</h3>
+                <button type="button" class="btn btn-primary" onclick="addRoom()">Add Room</button>
+            </div>
+
+            <!-- FAQs -->
+            <div id="faq-container">
+                <h3>FAQs</h3>
+                <button type="button" class="btn btn-primary" onclick="addFAQ()">Add FAQ</button>
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

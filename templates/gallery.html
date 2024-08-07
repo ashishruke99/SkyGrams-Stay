@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gallery - {{ property.property_name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: rgba(0, 0, 0, 0.8);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .close-button:hover {
+            background: #ddd;
+        }
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            overflow-y: auto;
+            max-height: 60vh;
+            padding: 10px;
+        }
+        .image-gallery img {
+            border-radius: 10px;
+            object-fit: cover;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .image-gallery img:hover {
+            transform: scale(1.05);
+        }
+        .full-size-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+        .full-size-image img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .full-size-image .nav-button {
+            position: absolute;
+            top: 50%;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .full-size-image .nav-button:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+        .full-size-image .nav-button.prev {
+            left: 10px;
+        }
+        .full-size-image .nav-button.next {
+            right: 10px;
+        }
+        .nav-tabs-custom {
+            background-color: #fff;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-tabs-custom .nav-link {
+            color: #495057;
+            border: none;
+            border-radius: 5px;
+            margin-right: 5px;
+            padding: 10px 15px;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+            flex: 1;
+            text-align: center;
+        }
+        .nav-tabs-custom .nav-link:hover {
+            background-color: #dee2e6;
+            color: #007bff;
+            transform: scale(1.05);
+        }
+        .nav-tabs-custom .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="close-button" onclick="closeGallery()">&times;</div>
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs d-flex justify-content-between" id="galleryTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#property-images" role="tab">Property Images</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#room-images" role="tab">Room Images</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#meal-images" role="tab">Meal Images</a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="property-images" role="tabpanel">
+                <div class="image-gallery">
+                    {% for image in property.images %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ image.image_file) }}" alt="Property Image" onclick="showFullSizeImage(this)">
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="room-images" role="tabpanel">
+                <div class="image-gallery">
+                    {% for room in property.rooms %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ room.room_photo) }}" alt="Room Image" onclick="showFullSizeImage(this)">
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="meal-images" role="tabpanel">
+                <div class="image-gallery">
+                    {% for meal in property.meals %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ meal.image_file) }}" alt="Meal Image" onclick="showFullSizeImage(this)">
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="full-size-image" id="fullSizeImage">
+            <button class="nav-button prev" onclick="prevImage()">&#10094;</button>
+            <img src="" alt="Full Size">
+            <button class="nav-button next" onclick="nextImage()">&#10095;</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let currentImageIndex;
+        let currentImages;
+
+        function closeGallery() {
+            window.history.back(); // Go back to the previous page
+        }
+
+        function showFullSizeImage(img) {
+            const fullSizeImageContainer = document.getElementById('fullSizeImage');
+            const fullSizeImage = fullSizeImageContainer.querySelector('img');
+            currentImages = [...img.parentElement.querySelectorAll('img')];
+            currentImageIndex = currentImages.indexOf(img);
+            fullSizeImage.src = img.src;
+            fullSizeImageContainer.style.display = 'flex';
+            document.addEventListener('keydown', handleKeydown);
+        }
+
+        function prevImage() {
+            if (currentImageIndex > 0) {
+                currentImageIndex--;
+                document.getElementById('fullSizeImage').querySelector('img').src = currentImages[currentImageIndex].src;
+            }
+        }
+
+        function nextImage() {
+            if (currentImageIndex < currentImages.length - 1) {
+                currentImageIndex++;
+                document.getElementById('fullSizeImage').querySelector('img').src = currentImages[currentImageIndex].src;
+            }
+        }
+
+        function handleKeydown(event) {
+            if (event.key === 'ArrowLeft') {
+                prevImage();
+            } else if (event.key === 'ArrowRight') {
+                nextImage();
+            } else if (event.key === 'Escape') {
+                closeFullSizeImage();
+            }
+        }
+
+        function closeFullSizeImage() {
+            document.getElementById('fullSizeImage').style.display = 'none';
+            document.removeEventListener('keydown', handleKeydown);
+        }
+
+        document.getElementById('fullSizeImage').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFullSizeImage();
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!document.querySelector('.container').contains(e.target)) {
+                closeGallery();
+            }
+        });
+
+        $(document).ready(function() {
+            var params = new URLSearchParams(window.location.search);
+            if (params.has('image')) {
+                const img = new Image();
+                img.src = 'static/uploads/' + params.get('image');
+                img.onload = () => showFullSizeImage(img);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans:wght@400;600;700&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-image: url('{{ url_for('static', filename='img/bnb.jpeg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            color: #333;
+        }
+        
+        .about-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .about-header h1 {
+            font-size: 36px;
+            color: #333;
+            font-family: 'Lobster', cursive;
+        }
+        
+        .about-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .about-section h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+            font-family: 'Raleway', sans-serif;
+        }
+        
+        .about-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .about-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .about-column {
+            padding: 20px;
+        }
+        
+        .about-column:nth-child(2) {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+        
+        .about-column h2 {
+            color: #007bff;
+        }
+        
+        .about-column p {
+            color: #444;
+        }
+        
+        @media (min-width: 768px) {
+            .about-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        
+            .about-column {
+                flex: 1;
+            }
+        }
+        
+        .team-container {
+            text-align: center;
+            margin-top: 40px;
+            position: relative;
+            z-index: -1;
+            min-height: 400px;
+        }
+        
+        .team-container h2 {
+            font-size: 32px;
+            color: black;
+            margin-bottom: 20px;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        .team-members {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .team-member {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            max-width: 300px;
+            border: 2px solid #40e0d0;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .team-member img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .team-member h3 {
+            font-size: 22px;
+            color: #333;
+            margin: 10px 0 5px;
+            font-family: 'Raleway', sans-serif;
+        }
+        
+        .team-member h4 {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .team-member p {
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+        }
+        
+        @media (min-width: 768px) {
+            .team-members {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+        
+        .backend-team {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .backend-team h3 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+            font-family: 'Raleway', sans-serif;
+            text-align: center;
+        }
+        
+        .backend-team p, .backend-team ul {
+            text-align: left;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .backend-team ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        
+        .backend-team li {
+            margin-bottom: 10px;
+        }
+        
+        .backend-team li strong {
+            color: #333;
+        }
+        
+        .our-journey {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .our-journey h2 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+            font-family: 'Raleway', sans-serif;
+            text-align: center;
+        }
+        
+        .our-journey p, .our-journey ul {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .journey-timeline {
+            position: relative;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .journey-timeline img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .timeline-text {
+            position: absolute;
+            text-align: left;
+            word-wrap: break-word;
+            background: rgba(255, 255, 255, 0.8); /* Add background for better readability */
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease; /* Smooth transition for responsive adjustments */
+            font-size: 14px;
+            width: 150px;
+        }
+        
+        #text1 {
+            bottom: 10%;
+            left: 30%;
+        }
+        
+        #text2 {
+            bottom: 5%;
+            right: 10%;
+        }
+        
+        .timeline-text p {
+            margin: 0;
+            color: #333;
+        }
+
+        @media (max-width: 767px) {
+            .timeline-text {
+                width: 100px;
+                font-size: 12px; /* Adjust font size for mobile view */
+                padding: 3px; /* Adjust padding for mobile view */
+            }
+            
+            #text1 {
+                bottom: 20%;
+                left: 20%;
+            }
+
+            #text2 {
+                bottom: 15%;
+                right: 5%;
+            }
+        }
+
+        .timeline-text:hover {
+            font-size: 18px; /* Increase font size on hover */
+            padding: 10px; /* Adjust padding for readability */
+            width: auto;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="about-header">
+        <h1>About Us</h1>
+    </div>
+    <div class="team-container">
+        <h2>Meet Our Team</h2>
+        <div class="team-members">
+            <div class="team-member">
+                <img src="{{ url_for('static', filename='img/team3.jpg') }}" alt="Ayush Palesha">
+                <h3>Ayush Palesha</h3>
+                <h4>Operations and Legal Head</h4>
+                <p>In his role as SkyGram Stays' operations and legal head, Ayush Palesha diligently manages the business's ongoing operations and legal issues. Ayush has a strong foundation in civil engineering and brings to his position significant expertise in managing large-scale projects and ensuring compliance with all relevant regulations, which contribute to the betterment.</p>
+            </div>
+            <div class="team-member">
+                <img src="{{ url_for('static', filename='img/team 2.jpg') }}" alt="Manav Nibjiya">
+                <h3>Manav Nibjiya</h3>
+                <h4>Finance and Management Head</h4>
+                <p>At SkyGram Stays, Manav Nibjiya takes on the position of Finance and Management Head, where he plays a vital role in managing the organization's finances and general management. Manav is able to ensure the financial stability and strategic management of SkyGram Stays by using his special blend of technical and business abilities. </p>
+            </div>
+            <div class="team-member">
+                <img src="{{ url_for('static', filename='img/team1.jpg') }}" alt="Nirbhay Shah">
+                <h3>Nirbhay Shah</h3>
+                <h4>Head of Design</h4>
+                <p>Our head of design, Nirbhay Shah, holds a degree from a prestigious university in Pune. His career adventure has led him down an enthralling route that has taken him from the colorful landscapes of Vietnam to the bustling cityscape of Mumbai and the peaceful serenity of Alibaug. Today, Nirbhay proudly oversees an established architectural practice in Pune.</p>
+            </div>
+        </div>
+        <div class="backend-team">
+            <h3>Our Backend Team</h3>
+            <p>We Are Nothing Without Our Complete Team:</p>
+            <ul>
+                <li><strong>Marketing Team:</strong> Our marketing team runs ads, collaborates with partners, and executes multiple campaigns daily to market your villa effectively.</li>
+                <li><strong>Sales and Operations Team:</strong> Our sales team handles all leads and attends to in-house guests, ensuring every query is promptly addressed.</li>
+                <li><strong>IT Team:</strong> Our dedicated IT team maintains our website and manages our listings on other portals, ensuring a seamless online experience.</li>
+                <li><strong>Ground Support Staff:</strong> Our ground support staff is the backbone of our operations, managing inspections, stocking, and emergency coordination to ensure everything runs smoothly.</li>
+            </ul>
+        </div>
+
+        <div class="our-journey">
+            <h2>Our Journey So Far!</h2>
+            <p>It all started two years ago when one of our friends listed his own villa on Airbnb as an experiment. After one year of positive results, we being childhood friends—decided to join forces. We aimed to host more villas around Pune.</p>
+            <p>Since then, we've grown from managing just <strong>1 villa to 15 villas in less than a year</strong> and many more in the pipeline. Our small experiment has turned into a thriving business!</p>
+            
+            <div class="journey-timeline">
+                <img src="{{ url_for('static', filename='img/journey.jpeg') }}" alt="Our Journey Timeline">
+                <div class="timeline-text" id="text1">
+                    <p style="color:rgb(120, 5, 5);"><strong>September, 2023:</strong></p>
+                    <p style="color:rgb(212, 5, 5);">Started with 1 villa in Mahabaleshwar</p>
+                </div>
+                <div class="timeline-text" id="text2">
+                    <p style="color:rgb(120, 5, 5);"><strong>May, 2024:</strong></p>
+                    <p style="color:rgb(212, 5, 5);">Added 3 more villas in Mahabaleshwar, 2 in Lonavala, 2 in Bhor and 6 more in Goa</p>
+                </div>
+            </div>
+
+            <h3>What We Aim For:</h3>
+            <ul class="aim-list">
+                <li><strong>Quality over Quantity:</strong> Target to manage only 5-6 villas in any given area.</li>
+                <li><strong>Regional Focus:</strong> Establish ourselves primarily around Maharashtra.</li>
+                <li><strong>Individual Promotion:</strong> Marketing each villa rather than promoting the location.</li>
+                <li><strong>Exceptional Guest Experiences:</strong> Every getaway is truly exceptional and memorable.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>All Properties</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baskerville:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+body {
+    font-family: 'Baskerville', serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+.fcontainer {
+    max-width: 100% !important;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+h1, h2 {
+    font-family: 'Baskerville', serif;
+    font-weight: 600;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 24px;
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); 
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative;
+    z-index: 10001;
+}
+
+.popup-content input, .popup-content button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    font-family: 'Baskerville', serif;
+}
+
+.inline {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.inline label {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+}
+
+.inline input {
+    width: 100%;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.guest-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    cursor: pointer;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.guest-box:hover {
+    background-color: #f0f0f0;
+}
+
+.guest-popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.guest-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.guest-item label {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.guest-item div {
+    display: flex;
+    align-items: center;
+}
+
+.guest-item div button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ccc;
+    background: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.guest-item div input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    background: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.guest-actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.guest-actions button {
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.guest-actions button.apply {
+    background-color: black;
+    color: white;
+}
+
+.guest-actions button.clear {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+.login-button-container {
+    position: relative;
+    display: inline-block;
+    margin-left: auto;
+}
+
+.user-icon {
+    position: relative;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 5px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+.user-dropdown a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.user-dropdown a:hover {
+    background-color: #f2f2f2;
+}
+
+.user-icon:hover .user-dropdown {
+    display: block;
+}
+
+.main-content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.filters {
+    width: 25%;
+    background: linear-gradient(to bottom right, #f9f9f9, #e3e3e3); /* Changed background color */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;
+    z-index: 999;
+}
+
+.filter-item {
+    margin-bottom: 20px;
+}
+
+.filter-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.filter-item input[type="range"] {
+    width: 100%;
+}
+
+.filter-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.filter-actions button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.filter-actions button:hover {
+    background-color: #0056b3;
+}
+
+.properties {
+    flex: 1;
+    padding: 20px;
+    background-color: white; /* Changed background color */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.properties h1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.property-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: auto;
+    position: relative;
+    cursor: pointer;
+    background: linear-gradient(to bottom right, #f9f9f9, #e3e3e3);
+    padding: 20px;
+}
+
+.property-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.property-image {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 300px;
+    height: 250px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.property-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.property-details {
+    flex: 1;
+    padding: 0 20px;
+}
+
+.property-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.property-location {
+    display: flex;
+    align-items: center;
+    color: gray;
+    margin-bottom: 10px;
+}
+
+.property-location i {
+    margin-right: 5px;
+}
+
+.property-info {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.property-info div {
+    margin-right: 15px;
+    border-right: 1px solid #ddd;
+    padding-right: 10px;
+}
+
+.property-info div:last-child {
+    border-right: none;
+}
+
+.property-great-for,
+.property-amenities {
+    margin-bottom: 10px;
+}
+
+.property-great-for span,
+.property-amenities span {
+    display: inline-block;
+    margin-right: 15px;
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-transform: capitalize;
+}
+
+.property-price-view {
+    text-align: right;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.property-price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.property-view a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.property-view a:hover {
+    background-color: #333;
+    transform: scale(1.05);
+}
+
+.heart-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    color: black;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: color 0.3s, background-color 0.3s;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heart-icon.clicked {
+    background-color: red;
+    color: white;
+}
+
+.luxury-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: gold;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.star-rating {
+    color: #FFD700;
+    display: inline-block;
+    font-size: 12px;
+}
+
+.star-rating .fa-star {
+    margin-right: 2px;
+}
+
+.action-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.action-links a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.action-links a:hover {
+    background-color: #333;
+    transform: scale(1.05);
+}
+
+.action-links .add-property,
+.action-links .view-favorites {
+    border: none;
+    background-color: transparent;
+    color: #000;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.action-links .add-property {
+    color: #007bff;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+}
+
+.action-links .view-favorites {
+    color: #dc3545;
+    border: 2px dashed #dc3545;
+    border-radius: 5px;
+}
+
+.action-links .add-property:hover,
+.action-links .view-favorites:hover {
+    transform: scale(1.05);
+    background-color: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .filters {
+        width: 100%;
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+    }
+    .filters.show {
+        display: block;
+    }
+    .properties {
+        width: 100%;
+        margin: 0;
+    }
+    .property-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .property-image {
+        width: 100%;
+        height: 200px;
+    }
+    .property-details {
+        width: 100%;
+        text-align: center;
+    }
+    .property-price-view {
+        width: 100%;
+        text-align: center;
+    }
+    .action-links {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    text-align: center;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+}
+
+.hamburger:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+}
+        
+    </style>
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <div class="fcontainer">
+        <div id="popup" class="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup()">&times;</span>
+                <h2>Guest Information</h2>
+                <form id="infoForm" action="{{ url_for('submit') }}" method="post">
+                    <input type="text" id="name" name="name" placeholder="Name" required>
+                    <input type="email" id="email" name="email" placeholder="Email" required>
+                    <input type="tel" id="mobile" name="mobile" placeholder="Mobile" required>
+                    <input type="text" id="place" name="place" placeholder="Place to Visit" required>
+                    <div class="inline">
+                        <div>
+                            <label for="checkin">Check-in Date</label>
+                            <input type="date" id="checkin" name="checkin" required>
+                        </div>
+                        <div>
+                            <label for="checkout">Check-out Date</label>
+                            <input type="date" id="checkout" name="checkout" required>
+                        </div>
+                    </div>
+                    <div id="guestBox" class="guest-box" onclick="openGuestForm()">Guests: 02 adults & 00 children</div>
+                    <button type="submit">Submit</button>
+                    <!-- Hidden inputs for guest data -->
+                    <input type="hidden" id="guest_adults" name="guest_adults" value="02">
+                    <input type="hidden" id="guest_children" name="guest_children" value="00">
+                    <input type="hidden" id="guest_infants" name="guest_infants" value="00">
+                </form>
+            </div>
+        </div>
+        
+        <div id="guestPopup" class="popup">
+            <div class="popup-content guest-popup-content">
+                <span class="close" onclick="closeGuestForm()">&times;</span>
+                <h2>Guests Information</h2>
+                <div class="guest-item">
+                    <label for="adults">Adults<br><span style="font-size: 12px;">Age 13 years and more</span></label>
+                    <div>
+                        <button type="button" onclick="changeGuestCount('adults', -1)">-</button>
+                        <input type="text" id="adults" name="adults" value="02" readonly>
+                        <button type="button" onclick="changeGuestCount('adults', 1)">+</button>
+                    </div>
+                </div>
+                <div class="guest-item">
+                    <label for="children">Children<br><span style="font-size: 12px;">Age 3-12 years</span></label>
+                    <div>
+                        <button type="button" onclick="changeGuestCount('children', -1)">-</button>
+                        <input type="text" id="children" name="children" value="00" readonly>
+                        <button type="button" onclick="changeGuestCount('children', 1)">+</button>
+                    </div>
+                </div>
+                <div class="guest-item">
+                    <label for="infants">Infants<br><span style="font-size: 12px;">Age 0-2 years</span></label>
+                    <div>
+                        <button type="button" onclick="changeGuestCount('infants', -1)">-</button>
+                        <input type="text" id="infants" name="infants" value="00" readonly>
+                        <button type="button" onclick="changeGuestCount('infants', 1)">+</button>
+                    </div>
+                </div>
+                <div class="guest-actions">
+                    <button type="button" class="clear" onclick="clearGuestInfo()">Clear</button>
+                    <button type="button" class="apply" onclick="applyGuestInfo()">Apply</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="location-filter">
+                <h2>Filter by Location</h2>
+                <div class="locations">
+                    <a href="{{ url_for('Customer_properties', location='ALL') }}">
+                        <img src="{{ url_for('static', filename='images/all.png') }}" alt="All">
+                    </a>
+                    <a href="{{ url_for('Customer_properties', location='Pune') }}">
+                        <img src="{{ url_for('static', filename='images/pune.png') }}" alt="Pune">
+                    </a>
+                    <a href="{{ url_for('Customer_properties', location='Goa') }}">
+                        <img src="{{ url_for('static', filename='images/goa.png') }}" alt="Goa">
+                    </a>
+                </div>
+            </div>
+      
+            <div class="main-content">
+                <div class="filters">
+                    <div class="hamburger" onclick="toggleFilters()">☰ Filters</div>
+                    <form method="GET" action="{{ url_for('Customer_properties') }}">
+                        <!-- Price Range Slider -->
+                        <div class="filter-item">
+                            <label for="min_price">Min Price:</label>
+                            <input type="number" id="min_price" name="min_price" value="{{ request.args.get('min_price', '') }}">
+                        </div>
+                        <div class="filter-item">
+                            <label for="max_price">Max Price:</label>
+                            <input type="number" id="max_price" name="max_price" value="{{ request.args.get('max_price', '') }}">
+                        </div>
+                        
+                        <!-- Room Count -->
+                        <div class="filter-item">
+                            <label for="room_count">Room Count:</label>
+                            <input type="number" id="room_count" name="room_count" value="{{ request.args.get('room_count', '') }}">
+                        </div>
+                        
+                        <!-- Amenities Checkboxes -->
+                        <div class="filter-item">
+                            <label for="wifi">Wi-Fi</label>
+                            <input type="checkbox" id="wifi" name="amenities" value="Wi-Fi" {% if 'Wi-Fi' in request.args.getlist('amenities') %}checked{% endif %}>
+                        </div>
+                        <div class="filter-item">
+                            <label for="tv">TV</label>
+                            <input type="checkbox" id="tv" name="amenities" value="TV" {% if 'TV' in request.args.getlist('amenities') %}checked{% endif %}>
+                        </div>
+                        
+                        <!-- Submit and Reset Buttons -->
+                        <div class="filter-actions">
+                            <button type="submit">Apply Filter</button>
+                            <a href="{{ url_for('Customer_properties') }}">Reset</a>
+                        </div>
+                    </form>
+                </div>
+            
+            <div class="properties">
+                <h1>All Properties
+                    <a href="{{ url_for('favorites') }}" class="view-favorites"><i class="fas fa-heart"></i> View Favorites</a>
+                </h1>
+                {% for property in properties %}
+                <div class="property-container" onclick="window.location.href='{{ url_for('villa', property_id=property.id) }}';">
+                    <div class="property-image">
+                        <div class="luxury-tag">Luxury</div>
+                        <img src="{{ url_for('static', filename='uploads/' ~ property.cover_photo) }}" alt="Cover Photo">
+                        <div class="heart-icon" onclick="toggleFavorite(event, {{ property.id }})">♡</div>
+                    </div>
+                    <div class="property-details">
+                        <div class="property-title">{{ property.property_name }}</div>
+                        <div class="property-location">
+                            <i class="bi bi-geo-alt"></i>
+                            {{ property.location }}
+                        </div>
+                        <div class="star-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="property-info">
+                            <div>Upto {{ property.guest_capacity }} Guests</div>
+                            <div>{{ property.room_count }} Rooms</div>
+                            <div>{{ property.baths }} Baths</div>
+                        </div>
+                        <hr>
+                        <div class="property-great-for">
+                            Great for:
+                            {% for item in property.great_for %}
+                                <span>{{ item | title }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="property-amenities">
+                            <h5>Amenities</h5>
+                            {% for amenity in property.amenities %}
+                                <div>
+                                    <img src="{{ url_for('static', filename=amenity.icon) }}" alt="{{ amenity.name }}" width="20">
+                                    {{ amenity.name }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="property-price-view">
+                        <div class="property-price">₹{{ property.price }}</div>
+                        <div class="property-view">
+                            <a href="{{ url_for('villa', property_id=property.id) }}">View</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="action-links">
+                    <a href="{{ url_for('our_destination') }}" class="add-property"><i class="fas fa-plus-circle"></i> Add New Property</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-property">
+            <a href="{{ url_for('edit_prices') }}">Edit Prices</a>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            document.getElementById('popup').style.display = 'flex';
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('checkin').setAttribute('min', today);
+            document.getElementById('checkout').setAttribute('min', today);
+        };
+        
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+        
+        function openGuestForm() {
+            document.getElementById('guestPopup').style.display = 'flex';
+        }
+        
+        function closeGuestForm() {
+            document.getElementById('guestPopup').style.display = 'none';
+        }
+        
+        function changeGuestCount(type, value) {
+            var element = document.getElementById(type);
+            var currentValue = parseInt(element.value) || 0;
+            var newValue = currentValue + value;
+            if (newValue >= 0) {
+                element.value = newValue.toString().padStart(2, '0');
+            }
+        }
+        
+        function applyGuestInfo() {
+            var adults = document.getElementById('adults').value;
+            var children = document.getElementById('children').value;
+            var infants = document.getElementById('infants').value;
+        
+            document.getElementById('guest_adults').value = adults;
+            document.getElementById('guest_children').value = children;
+            document.getElementById('guest_infants').value = infants;
+        
+            var guestText = `${adults} adults`;
+            if (children > 0) {
+                guestText += ` & ${children} children`;
+            }
+            document.getElementById('guestBox').textContent = `Guests: ${guestText}`;
+        
+            closeGuestForm();
+        }
+        
+        function clearGuestInfo() {
+            document.getElementById('adults').value = '0';
+            document.getElementById('children').value = '0';
+            document.getElementById('infants').value = '0';
+            document.getElementById('guest_adults').value = '0';
+            document.getElementById('guest_children').value = '0';
+            document.getElementById('guest_infants').value = '0';
+            document.getElementById('guestBox').textContent = 'Guests';
+        }
+        
+        document.getElementById('infoForm').onsubmit = function(event) {
+            event.preventDefault();
+            fetch('{{ url_for("submit") }}', {
+                method: 'POST',
+                body: new FormData(this)
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.querySelector('.popup-content').innerHTML = '<h2>Thank you for your information!</h2>';
+                    setTimeout(() => {
+                        closePopup();
+                    }, 2000);
+                } else {
+                    alert('There was an error submitting the form.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error submitting the form.');
+            });
+        };
+        
+        function toggleFavorite(event, propertyId) {
+            event.stopPropagation();
+            const heartIcon = event.currentTarget;
+            heartIcon.classList.toggle('clicked');
+            fetch('/toggle-favorite', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ property_id: propertyId }),
+            });
+        }
+
+        function updatePriceValue(value) {
+            document.getElementById('priceValue').textContent = `₹${value}`;
+        }
+        
+        function applyFilters() {
+            const priceRange = document.getElementById('priceRange').value;
+            const amenities = Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(el => el.value);
+            const rooms = document.getElementById('rooms').value;
+        
+            // Logic to filter properties based on the selected criteria
+            // This example assumes properties data is available in a global variable 'properties'
+            let filteredProperties = properties.filter(property => {
+                return property.price <= priceRange &&
+                       amenities.every(amenity => property.amenities.includes(amenity)) &&
+                       property.room_count >= rooms;
+            });
+        
+            displayProperties(filteredProperties);
+        }
+        
+        function removeFilters() {
+            document.getElementById('priceRange').value = 0;
+            document.getElementById('priceValue').textContent = '₹0';
+            Array.from(document.querySelectorAll('input[name="amenities"]:checked')).forEach(el => el.checked = false);
+            document.getElementById('rooms').value = 1;
+        
+            // Display all properties again
+            displayProperties(properties);
+        }
+
+        function toggleFilters() {
+            document.querySelector('.filters').classList.toggle('show');
+        }
+        
+    </script>
+    {% endblock %}
+</body>
+</html>

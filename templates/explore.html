@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyGram Stays</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+        }
+        .navbar-brand {
+            color: #fff;
+            font-size: 1.5em;
+            text-decoration: none;
+        }
+        .navbar-toggler {
+            border: none;
+            color: #fff;
+        }
+        .navbar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        .navbar-nav li {
+            margin: 0 10px;
+        }
+        .navbar-nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+        .navbar-nav a:hover {
+            background-color: #555;
+            color: #fff;
+        }
+        .image-slider {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            overflow: hidden;
+            height: 400px;
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+        }
+        .slide {
+            position: relative;
+            min-width: 100%;
+            height: 100%;
+        }
+        .slides img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .slider-text {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.2em;
+        }
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 1.5em;
+            z-index: 1000;
+        }
+        .prev {
+            left: 10px;
+        }
+        .next {
+            right: 10px;
+        }
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+        }
+        .popup-content input, .popup-content button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        .inline {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .inline div {
+            width: 48%;
+        }
+        .inline label {
+            display: block;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+        }
+        .inline input {
+            width: 100%;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .guest-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            text-align: left;
+        }
+        .guest-box:hover {
+            background-color: #f0f0f0;
+        }
+        .guest-popup-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        .guest-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .guest-item label {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .guest-item div {
+            display: flex;
+            align-items: center;
+        }
+        .guest-item div button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            background: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .guest-item div input {
+            width: 50px;
+            text-align: center;
+            border: none;
+            background: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .guest-actions {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .guest-actions button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        .guest-actions button.apply {
+            background-color: black;
+            color: white;
+        }
+        .guest-actions button.clear {
+            background-color: white;
+            color: black;
+            border: 1px solid black;
+        }
+        .login-button-container {
+            position: relative;
+            display: inline-block;
+            left: 92%;
+        }
+
+        .user-icon {
+            position: relative;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 5px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #f2f2f2;
+        }
+
+        .user-icon:hover .user-dropdown {
+            display: block;
+        }
+
+        .destination-section {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .destination-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .destinations {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .destination {
+            margin: 10px;
+            text-align: center;
+        }
+
+        .destination img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .destination img:hover {
+            transform: scale(1.1);
+        }
+
+        .destination p {
+            margin-top: 10px;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .destination-link {
+            text-decoration: none;
+        }
+
+        .destination-link:hover p {
+            color: #666;
+        }
+
+        .best-rated-section {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .best-rated-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .best-rated-slider {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        .best-rated-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+        }
+
+        .best-rated-slide {
+            scroll-snap-align: start;
+            min-width: 300px;
+            margin: 0 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .best-rated-slide img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .best-rated-slide .card-body {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .best-rated-slide .card-body h3 {
+            font-size: 1.2em;
+            margin: 0 0 10px;
+        }
+
+        .best-rated-slide .card-body p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .best-rated-slide .card-body .price {
+            font-size: 1.5em;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .best-rated-slide .card-body .view-details {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .best-rated-slide .card-body .view-details:hover {
+            background-color: #0056b3;
+        }
+
+        .best-rated-prev, .best-rated-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 1.5em;
+            z-index: 1000;
+        }
+
+        .best-rated-prev {
+            left: 10px;
+        }
+
+        .best-rated-next {
+            right: 10px;
+        }
+
+        .card-divider {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 10px 0;
+        }
+
+        .list-property-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(to right, #e0f7fa, #fce4ec);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .list-property-bar .text {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .list-property-bar .subtext {
+            font-size: 1em;
+            margin-top: 5px;
+        }
+
+        .list-property-bar .btn-list-now {
+            background-color: #000;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .list-property-bar .btn-list-now:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+    <div class="image-slider">
+        <button class="prev">&#10094;</button>
+        <div class="slides">
+            <div class="slide">
+                <img src="{{ url_for('static', filename='img/01.jpg') }}" alt="Slide 1">
+                <div class="slider-text">Welcome to SkyGram Stays</div>
+            </div>
+            <div class="slide">
+                <img src="{{ url_for('static', filename='img/02.jpg') }}" alt="Slide 2">
+                <div class="slider-text">Discover Our Amazing Villas</div>
+            </div>
+            <div class="slide">
+                <img src="{{ url_for('static', filename='img/03.jpg') }}" alt="Slide 3">
+                <div class="slider-text">Book Your Stay Now</div>
+            </div>
+        </div>
+        <button class="next">&#10095;</button>
+    </div>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <h2>Guest Information</h2>
+            <form id="infoForm" action="{{ url_for('submit') }}" method="post">
+                <input type="text" id="name" name="name" placeholder="Name" required>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <input type="tel" id="mobile" name="mobile" placeholder="Mobile" required>
+                <input type="text" id="place" name="place" placeholder="Place to Visit" required>
+                <div class="inline">
+                    <div>
+                        <label for="checkin">Check-in Date</label>
+                        <input type="date" id="checkin" name="checkin" required>
+                    </div>
+                    <div>
+                        <label for="checkout">Check-out Date</label>
+                        <input type="date" id="checkout" name="checkout" required>
+                    </div>
+                </div>
+                <div id="guestBox" class="guest-box" onclick="openGuestForm()">Guests: 02 adults & 00 children & 00 infants</div>
+                <button type="submit">Submit</button>
+                <!-- Hidden inputs for guest data -->
+                <input type="hidden" id="guest_adults" name="guest_adults" value="02">
+                <input type="hidden" id="guest_children" name="guest_children" value="00">
+                <input type="hidden" id="guest_infants" name="guest_infants" value="00">
+            </form>
+        </div>
+    </div>
+    
+    <div id="guestPopup" class="popup">
+        <div class="popup-content guest-popup-content" style="width: 400px;">
+            <span class="close" onclick="closeGuestForm()">&times;</span>
+            <h2>Guests Information</h2>
+            <div class="guest-item">
+                <label for="adults">Adults<br><span style="font-size: 12px;">Age 13 years and more</span></label>
+                <div>
+                    <button type="button" onclick="changeGuestCount('adults', -1)">-</button>
+                    <input type="text" id="adults" name="adults" value="02" readonly>
+                    <button type="button" onclick="changeGuestCount('adults', 1)">+</button>
+                </div>
+            </div>
+            <div class="guest-item">
+                <label for="children">Children<br><span style="font-size: 12px;">Age 3-12 years</span></label>
+                <div>
+                    <button type="button" onclick="changeGuestCount('children', -1)">-</button>
+                    <input type="text" id="children" name="children" value="00" readonly>
+                    <button type="button" onclick="changeGuestCount('children', 1)">+</button>
+                </div>
+            </div>
+            <div class="guest-item">
+                <label for="infants">Infants<br><span style="font-size: 12px;">Age 0-2 years</span></label>
+                <div>
+                    <button type="button" onclick="changeGuestCount('infants', -1)">-</button>
+                    <input type="text" id="infants" name="infants" value="00" readonly>
+                    <button type="button" onclick="changeGuestCount('infants', 1)">+</button>
+                </div>
+            </div>
+            <div class="guest-actions">
+                <button type="button" class="clear" onclick="clearGuestInfo()">Clear</button>
+                <button type="button" class="apply" onclick="applyGuestInfo()">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="destination-section">
+        <h2>Explore Destinations</h2>
+        <div class="destinations">
+            <a href="{{ url_for('our_destination') }}" class="destination-link">
+                <div class="destination">
+                    <img src="{{ url_for('static', filename='img/Lonavala.svg') }}" alt="Lonavala">
+                    <p>Lonavala</p>
+                </div>
+            </a>
+            <a href="{{ url_for('our_destination') }}" class="destination-link">
+                <div class="destination">
+                    <img src="{{ url_for('static', filename='img/Goa.svg') }}" alt="Goa">
+                    <p>Goa</p>
+                </div>
+            </a>
+            <a href="{{ url_for('our_destination') }}" class="destination-link">
+                <div class="destination">
+                    <img src="{{ url_for('static', filename='img/Alibag.svg') }}" alt="Alibag">
+                    <p>Alibag</p>
+                </div>
+            </a>
+            <a href="{{ url_for('our_destination') }}" class="destination-link">
+                <div class="destination">
+                    <img src="{{ url_for('static', filename='img/Pune.svg') }}" alt="Pune">
+                    <p>Pune</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="best-rated-section">
+        <h2 class="text-center">Best Rated</h2>
+        <div class="best-rated-slider">
+            <button class="prev best-rated-prev">&#10094;</button>
+            <div class="best-rated-slides">
+                <div class="best-rated-slide">
+                    <div class="card-body">
+                        <a href="{{ url_for('our_destination') }}">
+                            <img src="{{ url_for('static', filename='img/01.jpg') }}" alt="Best Rated 1">
+                        </a>
+                        <h3>Casa Simoes - Candolim</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Goa, Goa</p>
+                        <p>Upto 7 Guests • 3 Rooms • 3 Baths</p>
+                        <hr class="card-divider">
+                        <p class="price">₹56,383</p>
+                        <p>For Per Night + Taxes</p>
+                        <a href="{{ url_for('our_destination') }}" class="view-details"><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="best-rated-slide">
+                    <div class="card-body">
+                        <a href="{{ url_for('our_destination') }}">
+                            <img src="{{ url_for('static', filename='img/02.jpg') }}" alt="Best Rated 2">
+                        </a>
+                        <h3>Casa Simoes - Candolim</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Goa, Goa</p>
+                        <p>Upto 7 Guests • 3 Rooms • 3 Baths</p>
+                        <hr class="card-divider">
+                        <p class="price">₹56,383</p>
+                        <p>For Per Night + Taxes</p>
+                        <a href="{{ url_for('our_destination') }}" class="view-details"><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="best-rated-slide">
+                    <div class="card-body">
+                        <a href="{{ url_for('our_destination') }}">
+                            <img src="{{ url_for('static', filename='img/03.jpg') }}" alt="Best Rated 3">
+                        </a>
+                        <h3>Casa Simoes - Candolim</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Goa, Goa</p>
+                        <p>Upto 7 Guests • 3 Rooms • 3 Baths</p>
+                        <hr class="card-divider">
+                        <p class="price">₹56,383</p>
+                        <p>For Per Night + Taxes</p>
+                        <a href="{{ url_for('our_destination') }}" class="view-details"><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="best-rated-slide">
+                    <div class="card-body">
+                        <a href="{{ url_for('our_destination') }}">
+                            <img src="{{ url_for('static', filename='img/01.jpg') }}" alt="Best Rated 4">
+                        </a>
+                        <h3>Casa Simoes - Candolim</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Goa, Goa</p>
+                        <p>Upto 7 Guests • 3 Rooms • 3 Baths</p>
+                        <hr class="card-divider">
+                        <p class="price">₹56,383</p>
+                        <p>For Per Night + Taxes</p>
+                        <a href="{{ url_for('our_destination') }}" class="view-details"><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="best-rated-slide">
+                    <div class="card-body">
+                        <a href="{{ url_for('our_destination') }}">
+                            <img src="{{ url_for('static', filename='img/02.jpg') }}" alt="Best Rated 5">
+                        </a>
+                        <h3>Casa Simoes - Candolim</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Goa, Goa</p>
+                        <p>Upto 7 Guests • 3 Rooms • 3 Baths</p>
+                        <hr class="card-divider">
+                        <p class="price">₹56,383</p>
+                        <p>For Per Night + Taxes</p>
+                        <a href="{{ url_for('our_destination') }}" class="view-details"><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="best-rated-slide">
+                    <div class="card-body">
+                        <a href="{{ url_for('our_destination') }}">
+                            <img src="{{ url_for('static', filename='img/03.jpg') }}" alt="Best Rated 6">
+                        </a>
+                        <h3>Casa Simoes - Candolim</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Goa, Goa</p>
+                        <p>Upto 7 Guests • 3 Rooms • 3 Baths</p>
+                        <hr class="card-divider">
+                        <p class="price">₹56,383</p>
+                        <p>For Per Night + Taxes</p>
+                        <a href="{{ url_for('our_destination') }}" class="view-details"><i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <button class="next best-rated-next">&#10095;</button>
+        </div>
+    </div>
+
+    <div class="list-property-bar">
+        <div>
+            <div class="text">LIST YOUR PROPERTY WITH US!</div>
+            <div class="subtext">Join our network of 800+ happy owners and turn your property into a high-revenue holiday destination!</div>
+        </div>
+        <a href="{{ url_for('list_your_property') }}" class="btn-list-now">List Now</a>
+    </div>
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelector('.slides');
+        const slideElements = document.querySelectorAll('.slide');
+        const totalSlides = slideElements.length;
+
+        document.querySelector('.next').addEventListener('click', () => {
+            slideIndex = (slideIndex + 1) % totalSlides;
+            updateSlidePosition();
+        });
+
+        document.querySelector('.prev').addEventListener('click', () => {
+            slideIndex = (slideIndex - 1 + totalSlides) % totalSlides;
+            updateSlidePosition();
+        });
+
+        function updateSlidePosition() {
+            const offset = -slideIndex * 100;
+            slides.style.transform = `translateX(${offset}%)`;
+        }
+
+        setInterval(() => {
+            slideIndex = (slideIndex + 1) % totalSlides;
+            updateSlidePosition();
+        }, 3000);
+        window.onload = function() {
+        document.getElementById('popup').style.display = 'flex';
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('checkin').setAttribute('min', today);
+        document.getElementById('checkout').setAttribute('min', today);
+    };
+
+    function closePopup() {
+        document.getElementById('popup').style.display = 'none';
+    }
+
+    function openGuestForm() {
+        document.getElementById('guestPopup').style.display = 'flex';
+    }
+
+    function closeGuestForm() {
+        document.getElementById('guestPopup').style.display = 'none';
+    }
+
+    function changeGuestCount(type, value) {
+        var element = document.getElementById(type);
+        var currentValue = parseInt(element.value) || 0;
+        var newValue = currentValue + value;
+        if (newValue >= 0) {
+            element.value = newValue.toString().padStart(2, '0');
+        }
+    }
+
+    function applyGuestInfo() {
+        var adults = document.getElementById('adults').value;
+        var children = document.getElementById('children').value;
+        var infants = document.getElementById('infants').value;
+
+        // Assign guest data to hidden inputs in the main form
+        document.getElementById('guest_adults').value = adults;
+        document.getElementById('guest_children').value = children;
+        document.getElementById('guest_infants').value = infants;
+
+        // Update guest box text
+        var guestText = `${adults} adults`;
+        guestText += ` & ${children} children`;
+        guestText += ` & ${infants} infants`;
+        document.getElementById('guestBox').textContent = `Guests: ${guestText}`;
+
+        closeGuestForm();
+    }
+
+    function clearGuestInfo() {
+        document.getElementById('adults').value = '0';
+        document.getElementById('children').value = '0';
+        document.getElementById('infants').value = '0';
+        document.getElementById('guest_adults').value = '0';
+        document.getElementById('guest_children').value = '0';
+        document.getElementById('guest_infants').value = '0';
+        document.getElementById('guestBox').textContent = 'Guests';
+    }
+
+    document.getElementById('infoForm').onsubmit = function(event) {
+        event.preventDefault();
+        fetch('{{ url_for("submit") }}', {
+            method: 'POST',
+            body: new FormData(this)
+        })
+        .then(response => {
+            if (response.ok) {
+                document.querySelector('.popup-content').innerHTML = '<h2>Thank you for your information!</h2>';
+                setTimeout(() => {
+                    closePopup();
+                }, 2000);
+            } else {
+                alert('There was an error submitting the form.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error submitting the form.');
+        });
+    };
+    </script>
+
+    {% endblock %}
+</body>
+</html>

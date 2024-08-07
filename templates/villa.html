@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% extends 'base.html' %}
+    {% block content %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{ property.property_name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: 'Baskerville', serif;
+            color: #333;
+            line-height: 1.6;
+            background-image: linear-gradient(135deg, #fdfcfb 0%, #e2e2e2 100%);
+            padding-top: 20px;
+        }
+        .container-fluid {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .popup-message {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background: #f44336;
+            color: white;
+            border-radius: 10px;
+            z-index: 1000;
+        }
+        .cover-photo-container {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 500px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .cover-photo-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ url_for('static', filename='uploads/' ~ property.cover_photo) }}');
+            background-size: cover;
+            background-position: center;
+            filter: blur(10px);
+            z-index: 1;
+            transform: scale(1.1);
+        }
+        .cover-photo {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('{{ url_for('static', filename='uploads/' ~ property.cover_photo) }}');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .cover-photo .overlay-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s;
+            margin-left: 10px;
+        }
+        .cover-photo .overlay-button:hover {
+            background: rgba(0, 0, 0, 0.7);
+            color: #ddd;
+        }
+        .icon-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .icon-buttons .icon-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            transition: background 0.3s, color 0.3s;
+            cursor: pointer;
+        }
+        .icon-buttons .icon-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+            color: #ddd;
+        }
+        .icon-buttons .icon-btn.clicked {
+            background: red;
+        }
+        .image-gallery {
+            display: flex;
+            gap: 15px;
+            overflow-x: scroll;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            width: 100%;
+        }
+        .image-gallery img {
+            flex: 0 0 300px;
+            border-radius: 10px;
+            object-fit: cover;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .image-gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .nav-tabs-custom {
+            background-color: #fff;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-tabs-custom .nav-link {
+            color: #495057;
+            border: none;
+            border-radius: 5px;
+            margin-right: 5px;
+            padding: 10px 15px;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+            flex: 1;
+            text-align: center;
+        }
+        .nav-tabs-custom .nav-link:hover {
+            background-color: #dee2e6;
+            color: #000;
+            transform: scale(1.05);
+        }
+        .nav-tabs-custom .nav-link.active {
+            background-color: #333;
+            color: #fff;
+        }
+        .overview-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .overview-section h1 {
+            width: 100%;
+            margin-bottom: 20px;
+            color: #000;
+        }
+        .overview-item {
+            flex: 1 1 45%;
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+        .overview-item p {
+            margin: 0;
+        }
+        .overview-item p strong {
+            font-weight: bold;
+            color: #000;
+        }
+        .faq-search {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        .faq-item .faq-question {
+            font-weight: bold;
+            color: #495057;
+        }
+        .faq-item .faq-answer {
+            margin-top: 5px;
+            color: #6c757d;
+        }
+        .faq-search input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: none;
+        }
+        .faq-search input:focus {
+            border-color: #333;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+        }
+        .btn-custom {
+            background-color: #333;
+            color: #fff;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn-custom:hover {
+            background-color: #555;
+            color: #fff;
+        }
+        .rooms-gallery {
+            display: flex;
+            overflow-x: scroll;
+            gap: 15px;
+        }
+        .rooms-gallery .room {
+            flex: 0 0 48%;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .rooms-gallery .room img {
+            width: 100%;
+            object-fit: cover;
+            height: 200px;
+        }
+        .rooms-gallery .room .room-details {
+            padding: 10px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .rooms-gallery .room .room-details h4 {
+            margin: 10px 0;
+            color: #000;
+        }
+        .rooms-gallery .room .room-details p {
+            margin: 0;
+            color: #6c757d;
+        }
+        .columns-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .content-column {
+            flex: 1;
+            width: 65%; /* Adjusted width */
+            padding-right: 15px;
+        }
+        .payment-column {
+            flex: 0 0 35%; /* Adjusted width */
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: sticky;
+            top: 80px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+        .payment-column h3 {
+            margin-bottom: 20px;
+        }
+        .payment-column .form-group {
+            margin-bottom: 15px;
+        }
+        .payment-column .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .payment-column .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        .payment-column .form-group input:focus {
+            border-color: #333;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+        }
+        .payment-column h4 {
+            margin-top: 20px;
+        }
+        .payment-column button, .payment-column a.btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .payment-column button:hover, .payment-column a.btn:hover {
+            background-color: #555;
+        }
+        .payment-column .form-inline {
+            display: flex;
+            justify-content: space-between;
+        }
+        .payment-column .form-inline .form-group {
+            flex: 1;
+        }
+        .payment-column .form-inline .form-group:first-child {
+            margin-right: 10px;
+        }
+        .tab-content {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .amenities-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .amenities-list li {
+            width: 50%;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .amenities-list li img {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        .meal-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .meal-item img {
+            flex: 0 0 100px;
+            width: 40%;
+            height: auto;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+        .section-heading {
+            display: flex;
+            align-items: center;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .section-heading h3 {
+            margin: 0;
+            margin-right: 10px;
+            color: #000;
+        }
+        .section-heading .heading-line {
+            flex-grow: 1;
+            height: 2px;
+            background-color: #333;
+        }
+        .gradient-button {
+            background-image: linear-gradient(to right, #333, #555);
+            color: #fff;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+        .gradient-button:hover {
+            background-image: linear-gradient(to right, #555, #333);
+            color: #fff;
+        }
+        @media (max-width: 768px) {
+            .content-column, .payment-column {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .payment-column {
+                margin-top: 20px;
+                position: static;
+            }
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .modal-content {
+            margin: 15% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 700px;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+        .modal-content img {
+            width: 100%;
+            height: auto;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .calendar-container {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .legend {
+            margin-top: 10px;
+        }
+        .legend span {
+            display: inline-block;
+            padding: 5px 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        .badge-danger {
+            background-color: red;
+        }
+        .badge-primary {
+            background-color: blue;
+        }
+        .last-minute-doubts {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+    </style>    
+</head>
+<body data-spy="scroll" data-target="#myTab" data-offset="50">
+    <div class="popup-message"></div>
+    <div class="container-fluid">
+        <div class="cover-photo-container">
+            <div class="cover-photo-background"></div>
+            <div class="cover-photo">
+                <div class="overlay-button">
+                    <a href="{{ url_for('gallery', property_id=property.id) }}" class="btn btn-light">View All Images</a>
+                    <a href="{{ url_for('favorites') }}" class="btn btn-light" style="margin-left: 10px;">Favorites</a>
+                </div>
+                <div class="icon-buttons">
+                    <div class="icon-btn" id="favorite-btn" onclick="toggleFavorite(event, {{ property.id }})"><i class="fas fa-heart"></i></div>
+                    <div class="icon-btn" id="whatsapp-btn"><i class="fab fa-whatsapp"></i></div>
+                    <div class="icon-btn" id="share-btn"><i class="fas fa-share-alt"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="image-gallery">
+            {% for image in property.images %}
+                <img src="{{ url_for('static', filename='uploads/' ~ image.image_file) }}" alt="Property Image" class="gallery-image" data-image-url="{{ url_for('static', filename='uploads/' ~ image.image_file) }}">
+            {% endfor %}
+        </div>
+
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs d-flex justify-content-between" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#overview" role="tab">Overview</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#highlights" role="tab">Highlights</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#spaces" role="tab">Spaces</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#amenities" role="tab">Amenities</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#meals" role="tab">Meals</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#location" role="tab">Location</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#faqs" role="tab">FAQs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#reviews" role="tab">Reviews</a>
+                </li>
+            </ul>
+        </div>
+        <div class="columns-container">
+            <div class="content-column">
+                <div id="overview" class="tab-content">
+                    <div class="overview-section">
+                        <h1>{{ property.property_name }}</h1>
+                        <div class="overview-item">
+                            <p><strong><i class="fas fa-map-marker-alt"></i> Location:</strong> {{ property.location }}</p>
+                        </div>
+                        <div class="overview-item">
+                            <p><strong><i class="fas fa-user-friends"></i> Guest Capacity:</strong> {{ property.guest_capacity }}</p>
+                        </div>
+                        <div class="overview-item">
+                            <p><strong><i class="fas fa-door-open"></i> Room Count:</strong> {{ property.room_count }}</p>
+                        </div>
+                        <div class="overview-item">
+                            <p><strong><i class="fas fa-bath"></i> Baths:</strong> {{ property.baths }}</p>
+                        </div>
+                        <div class="overview-item">
+                            <p><strong><i class="fas fa-star"></i> Great For:</strong> {{ property.great_for }}</p>
+                        </div>
+                        <div class="overview-item">
+                            <p><strong><i class="fas fa-dollar-sign"></i> Price:</strong> ₹{{ property.price }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="highlights" class="tab-content">
+                    <div class="section-heading">
+                        <h3>Highlights</h3>
+                        <div class="heading-line"></div>
+                    </div>
+                    <p>{{ property.highlights }}</p>
+                    <div class="gradient-button">House Rules</div>
+                    <div class="gradient-button">Terms & Conditions</div>
+                </div>
+                <div id="spaces" class="tab-content">
+                    <div class="section-heading">
+                        <h3>Spaces</h3>
+                        <div class="heading-line"></div>
+                    </div>
+                    <div class="rooms-gallery">
+                        {% for room in property.rooms %}
+                            <div class="room">
+                                <img src="{{ url_for('static', filename='uploads/' ~ room.room_photo) }}" alt="Room Image">
+                                <div class="room-details">
+                                    <h4>{{ room.room_name }}</h4>
+                                    <p>{{ room.room_description }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="amenities" class="tab-content">
+                    <div class="section-heading">
+                        <h3>Amenities</h3>
+                        <div class="heading-line"></div>
+                    </div>
+                    <ul class="amenities-list">
+                        {% for amenity in property.amenities %}
+                            <li><img src="{{ url_for('static', filename=amenity.icon) }}" alt="{{ amenity.name }}"> {{ amenity.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div id="meals" class="tab-content">
+                    <div class="section-heading">
+                        <h3>Meal Options</h3>
+                        <div class="heading-line"></div>
+                    </div>
+                    {% for meal in property.meals %}
+                        <div class="meal-item">
+                            <img src="{{ url_for('static', filename='uploads/' ~ meal.image_file) }}" alt="Meal Option">
+                            <p>{{ meal.description }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div id="location" class="tab-content">
+                    <div class="section-heading">
+                        <h3>Location</h3>
+                        <div class="heading-line"></div>
+                    </div>
+                    <p>{{ property.location_description }}</p>
+                    <iframe src="{{ property.location_link }}" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div id="faqs" class="tab-content">
+                    <div class="section-heading">
+                        <h3>FAQs</h3>
+                        <div class="heading-line"></div>
+                    </div>
+                    <div class="faq-search">
+                        <input type="text" id="faq-search-input" onkeyup="searchFAQs()" placeholder="Search FAQs...">
+                    </div>
+                    <div id="faq-list">
+                        {% for faq in property.faqs %}
+                            <div class="faq-item">
+                                <p class="faq-question"><strong>Q: {{ faq.question }}</strong></p>
+                                <p class="faq-answer">A: {{ faq.answer }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="reviews" class="tab-content">
+                    <div class="section-heading">
+                        <h3>Reviews</h3>
+                        <div class="heading-line"></div>
+                    </div>
+                    <p>Reviews content goes here...</p>
+                </div>
+            </div>
+            <div class="payment-column">
+                <div class="d-flex justify-content-between mb-3">
+                    <button class="btn btn-custom" id="check-availability">Check Availability</button>
+                    <button class="btn btn-custom" id="terms-conditions">Terms and Conditions</button>
+                </div>
+                <div id="calendar-container" style="display: none;">
+                    <h3>Availability</h3>
+                    <div id='calendar' class="calendar-container"></div>
+                    <div class="legend mt-2">
+                        <span class="badge badge-danger">Booked</span>
+                        <span class="badge badge-primary">Available</span>
+                    </div>
+                </div>
+                <div class="form-inline mt-3">
+                    <div class="form-group">
+                        <label for="check-in">Check-in Date:</label>
+                        <input type="date" id="check-in" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="check-out">Check-out Date:</label>
+                        <input type="date" id="check-out" class="form-control">
+                    </div>
+                </div>
+                <h4 class="mt-3">Total Amount: ₹<span id="payment-amount">0.00</span></h4>
+                <button id="pay-now" class="btn btn-custom">Pay Now</button>
+                <div class="last-minute-doubts">
+                    <p>Still having last minute doubts?</p>
+                    <button class="btn btn-custom" id="call-us">Call Us</button>
+                </div>
+                <a href="{{ url_for('Customer_properties') }}" class="btn btn-custom mt-4">Back to Properties</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Property Image">
+        </div>
+    </div>
+
+    <script>
+        function searchFAQs() {
+            const searchInput = document.getElementById('faq-search-input').value.trim().toLowerCase();
+            const faqs = document.querySelectorAll('.faq-item');
+
+            faqs.forEach(faq => {
+                const questionElement = faq.querySelector('.faq-question');
+                const answerElement = faq.querySelector('.faq-answer');
+                const questionText = questionElement.textContent.toLowerCase();
+                const answerText = answerElement.textContent.toLowerCase();
+
+                if (searchInput === '') {
+                    faq.style.display = '';
+                    removeHighlight(questionElement);
+                    removeHighlight(answerElement);
+                } else {
+                    if (questionText.includes(searchInput) || answerText.includes(searchInput)) {
+                        faq.style.display = '';
+                        highlightText(questionElement, searchInput);
+                        highlightText(answerElement, searchInput);
+                    } else {
+                        faq.style.display = 'none';
+                        removeHighlight(questionElement);
+                        removeHighlight(answerElement);
+                    }
+                }
+            });
+        }
+
+        function highlightText(element, searchText) {
+            const regex = new RegExp(`(${escapeRegExp(searchText)})`, 'gi');
+            const newHTML = element.innerHTML.replace(regex, `<span style="background-color: yellow;">$1</span>`);
+            element.innerHTML = newHTML;
+        }
+
+        function removeHighlight(element) {
+            const newHTML = element.innerHTML.replace(/<span style="background-color: yellow;">(.*?)<\/span>/gi, '$1');
+            element.innerHTML = newHTML;
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function toggleFavorite(event, propertyId) {
+            event.stopPropagation();
+            const heartIcon = event.currentTarget;
+            heartIcon.classList.toggle('clicked');
+            fetch('/toggle-favorite', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ property_id: propertyId }),
+            });
+        }
+
+        $(document).ready(function() {
+            var bookedDates = [];
+
+            $('#calendar').fullCalendar({
+                height: 350, // Reduce calendar display size
+                events: function(start, end, timezone, callback) {
+                    $.ajax({
+                        url: '/get_prices',
+                        dataType: 'json',
+                        data: {
+                            property_id: {{ property.id }}
+                        },
+                        success: function(data) {
+                            var events = [];
+                            bookedDates = data.booked_dates;
+                            var date = start.clone();
+
+                            while (date.isBefore(end)) {
+                                var event = {
+                                    start: date.format(),
+                                    allDay: true
+                                };
+
+                                if (bookedDates.includes(date.format('YYYY-MM-DD'))) {
+                                    event.title = '';
+                                    event.color = 'red'; // Mark booked dates in red
+                                } else {
+                                    event.title = '';
+                                    event.color = 'blue'; // Mark available dates in blue
+                                }
+
+                                events.push(event);
+                                date.add(1, 'day');
+                            }
+
+                            callback(events);
+                        }
+                    });
+                }
+            });
+
+            function calculateTotal() {
+                var checkInDate = $('#check-in').val();
+                var checkOutDate = $('#check-out').val();
+                if (checkInDate && checkOutDate) {
+                    var isBooked = false;
+                    for (var d = new Date(checkInDate); d <= new Date(checkOutDate); d.setDate(d.getDate() + 1)) {
+                        var formattedDate = d.toISOString().split('T')[0];
+                        if (bookedDates.includes(formattedDate)) {
+                            isBooked = true;
+                            break;
+                        }
+                    }
+
+                    if (isBooked) {
+                        $('.popup-message').text('Villa not available for the selected dates').fadeIn().delay(3000).fadeOut();
+                        $('#payment-amount').text('0.00');
+                    } else {
+                        $.ajax({
+                            url: '/calculate_total',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                property_id: {{ property.id }},
+                                check_in_date: checkInDate,
+                                check_out_date: checkOutDate
+                            }),
+                            success: function(response) {
+                                if (response.status === "success") {
+                                    $('#payment-amount').text(response.total_amount);
+                                } else {
+                                    alert('Error calculating total amount');
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    $('#payment-amount').text('0.00');
+                }
+            }
+
+            $('#check-in, #check-out').on('change', calculateTotal);
+
+            $('#pay-now').click(function() {
+                var amount = parseFloat($('#payment-amount').text()) * 100; // Amount in paisa
+                var options = {
+                    "key": "{{ key }}",
+                    "amount": amount,
+                    "name": "{{ property.property_name }}",
+                    "description": "Booking Payment",
+                    "handler": function(response) {
+                        $.ajax({
+                            url: '/charge',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                amount: amount,
+                                property_id: {{ property.id }},
+                                check_in_date: $('#check-in').val(),
+                                check_out_date: $('#check-out').val()
+                            }),
+                            success: function(response) {
+                                if (response.status === "Payment successful") {
+                                    alert('Payment successful');
+                                } else {
+                                    alert('Payment failed');
+                                }
+                            }
+                        });
+                    },
+                    "prefill": {
+                        "name": "",
+                        "email": ""
+                    },
+                    "theme": {
+                        "color": "#F37254"
+                    }
+                };
+                var rzp = new Razorpay(options);
+                rzp.open();
+            });
+
+            // Image Modal
+            var modal = document.getElementById("imageModal");
+            var modalImg = document.getElementById("modalImage");
+
+            $('.gallery-image').click(function() {
+                var src = $(this).attr('data-image-url');
+                modal.style.display = "block";
+                modalImg.src = src;
+            });
+
+            var span = document.getElementsByClassName("close")[0];
+            span.onclick = function() {
+                modal.style.display = "none";
+            };
+
+            // WhatsApp Button
+            $('#whatsapp-btn').click(function() {
+                var propertyName = "{{ property.property_name }}";
+                var whatsappMessage = "Query about this property: " + propertyName;
+                var whatsappUrl = "https://wa.me/yourphonenumber?text=" + encodeURIComponent(whatsappMessage);
+                window.open(whatsappUrl, '_blank');
+            });
+
+            // Share Button
+            $('#share-btn').click(function() {
+                var propertyUrl = window.location.href;
+                navigator.clipboard.writeText(propertyUrl).then(function() {
+                    alert('Link copied to clipboard');
+                }, function(err) {
+                    console.error('Error copying text: ', err);
+                });
+            });
+
+            // Toggle Calendar
+            $('#check-availability').click(function() {
+                $('#calendar-container').toggle();
+            });
+
+            // Terms and Conditions Button (Currently no action, just an example)
+            $('#terms-conditions').click(function() {
+                alert('Terms and Conditions');
+            });
+
+            // Call Us Button
+            $('#call-us').click(function() {
+                var phoneNumber = "tel:+1234567890";
+                window.location.href = phoneNumber;
+            });
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

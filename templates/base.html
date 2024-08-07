@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyGram Stays</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> 
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    <style>
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #preloader img {
+            width: 100px;
+        }
+
+        /* Header and Navbar Styles */
+        .header-top {
+            background-color: white;
+            color: #333;
+            padding: 10px 0;
+            width: 100%;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .header-top__container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-top__contact-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-top__contact-info i {
+            margin-right: 5px;
+        }
+
+        .header-top__contact-info a {
+            color: #333;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        .header-top__contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .header-top__login-button-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-icon img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 5px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+            right: 0;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #f2f2f2;
+        }
+
+        .user-icon:hover .user-dropdown {
+            display: block;
+        }
+
+        .navbar {
+            background-color: #333;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            
+        }
+
+        .navbar .navbar-brand img {
+            height: 50px;
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-nav li {
+            margin-left: 20px;
+            position: relative;
+        }
+
+        .navbar-nav li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+            padding: 10px 15px;
+            display: block;
+        }
+
+        .navbar-nav li a:hover {
+            color: lightgreen;
+            transform: scale(1.20);
+        }
+
+        .navbar-sticky {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        /* Footer Styles */
+        .footer-section {
+            background-color: #333;
+            color: white;
+            padding: 40px 0;
+            font-family: 'Heebo', Arial, sans-serif;
+            flex: 1;
+            min-width: 250px;
+            margin: 20px;
+            width: 100%;
+        }
+
+        .footer-section .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section__quick-links,
+        .footer-section__contact-info,
+        .footer-section__social {
+            margin-bottom: 20px;
+        }
+
+        .footer-section h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .footer-section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #fff;
+        }
+
+        .footer-section .footer-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px; 
+        }
+
+        .footer-section .footer-item i {
+            font-size: 24px;
+            margin-right: 15px;
+            color: #ccc;
+        }
+
+        .footer-section .footer-item .contact-info {
+            flex: 1;
+        }
+
+        .footer-section .footer-item p {
+            margin-bottom: 0;
+        }
+
+        .footer-section .footer-item span {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .footer-section .footer-item i:hover {
+            color: #fff; 
+        }
+
+        .footer-section .footer-item a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section .footer-item a:hover {
+            color: #fff;
+        }
+
+        .footer-section .footer-links {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .footer-section .footer-links a {
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #555;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+            color: #ccc;
+        }
+
+        .footer-bottom p a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-bottom p a:hover {
+            color: #fff;
+        }
+
+        /* Add the .footer-collapsible class to target the mobile view only */
+        @media (max-width: 768px) {
+            .footer-section ul {
+                display: none;
+            }
+
+            .footer-section h3.active + ul {
+                display: block;
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-top__container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .navbar .navbar-brand,
+            .navbar-toggler {
+                display: flex;
+                align-items: center;
+            }
+
+            .navbar-nav {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .navbar-nav li {
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+            }
+
+            .navbar-nav li a {
+                padding: 10px 0;
+                width: 100%;
+                text-align: left;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .footer-bottom p {
+                text-align: left;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="preloader">
+        <img src="{{ url_for('static', filename='img/preloader.gif') }}" alt="Loading...">
+    </div>
+
+    <div class="header-top">
+        <div class="container header-top__container">
+            <div class="header-top__contact-info">
+                <a href="mailto:info@skygramstays.in"><i class="bi bi-envelope"></i> info@skygramstays.in</a>
+                <a href="#"><i class="bi bi-geo-alt"></i> Mukund Nagar, Pune</a>
+            </div>
+            <div class="header-top__login-button-container">
+                {% if 'user_id' in session %}
+                    <div class="user-icon">
+                        <button><img src="{{ url_for('static', filename='img/user.png') }}" alt="User Icon"></button>
+                        <div class="user-dropdown">
+                            <a href="#">Hi {{ session['first_name'] }} {{ session['last_name'] }}</a>
+                            <a href="#">Edit Profile</a>
+                            <a href="{{ url_for('logout') }}">Logout</a>
+                            <a href="tel:+919226784221" class="call-button"><i class="bi bi-phone"></i>+91 9226784221</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <header class="navbar navbar-expand-lg navbar-dark navbar-sticky">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo" class="logo-part" id="logo-part1">
+                <img src="{{ url_for('static', filename='img/logo-mini.png') }}" alt="Company Name" class="logo-part" id="logo-part2">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li><a href="{{ url_for('explore') }}">Explore</a></li>
+                    <li><a href="{{ url_for('Customer_properties') }}">Our Destination</a></li>
+                    <li><a href="{{ url_for('list_your_property') }}">List Your Property</a></li>
+                    <li><a href="{{ url_for('about_us') }}">About Us</a></li>
+                    <li><a href="{{ url_for('contact_us') }}">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section__quick-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{{ url_for('explore') }}">Explore</a></li>
+                        <li><a href="{{ url_for('Customer_properties') }}">Our Destination</a></li>
+                        <li><a href="{{ url_for('list_your_property') }}">List Your Property</a></li>
+                        <li><a href="{{ url_for('about_us') }}">About Us</a></li>
+                        <li><a href="{{ url_for('contact_us') }}">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section__contact-info">
+                    <h3>Contact Us</h3>
+                    <div class="footer-item">
+                        <i class="bi bi-phone"></i>
+                        <div class="contact-info">
+                            <p><a href="tel:+919226784221">+91 9226784221</a><br><span>Phone Number</span></p>
+                        </div>
+                    </div>
+                    <div class="footer-item">
+                        <i class="bi bi-envelope"></i>
+                        <div class="contact-info">
+                            <p><a href="mailto:info@skygramstays.in">info@skygramstays.in</a><br><span>Business Email</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-section__social">
+                    <h3>Follow Us</h3>
+                    <div class="footer-item">
+                        <i class="bi bi-facebook"></i>
+                        <div class="contact-info">
+                            <p><a href="https://www.facebook.com/people/SkyGram-Stays/pfbid049m5DT24XV3kJpYKYh3nZT54vYGc39finw9QBgoRYM16B8H93is6HfH9284e5Qyel/" target="_blank">SkyGram Stays</a><br><span>Facebook</span></p>
+                        </div>
+                    </div>
+                    <div class="footer-item">
+                        <i class="bi bi-instagram"></i>
+                        <div class="contact-info">
+                            <p><a href="https://www.instagram.com/skygram_stays/" target="_blank">skygram_stays</a><br><span>Instagram</span></p>
+                        </div>
+                    </div>
+                    <div class="footer-item">
+                        <i class="bi bi-whatsapp"></i>
+                        <div class="contact-info">
+                            <p><a href="https://api.whatsapp.com/send/?phone=%2B919226784221&text&type=phone_number&app_absent=0" target="_blank">+91 9226784221</a><br><span>WhatsApp</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="text-left">&copy;<script>document.write(new Date().getFullYear());</script> SkyGram Stays. All rights reserved.</p>
+                <p class="text-right"><a href="#">Privacy Policy</a> | <a href="#">Terms & Conditions</a></p>
+            </div>
+        </div>
+    </footer>    
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var preloader = document.getElementById('preloader');
+
+            function hidePreloader() {
+                preloader.style.display = 'none';
+            }
+
+            window.addEventListener('load', hidePreloader);
+        });
+    </script>
+</body>
+</html>

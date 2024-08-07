@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Details</title>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='img/02.jpg') }}");
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.75);
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+
+        .property-details {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .property-details h2 {
+            width: 100%;
+            text-align: center;
+            color: #333;
+        }
+
+        .property-details p {
+            width: 45%;
+            background: #fff;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .property-details p:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .property-photos {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .property-photos h3 {
+            color: #333;
+        }
+
+        .property-photos img {
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+            border-radius: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .property-photos img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #fff;
+            background: #333;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        a:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Property Details</h1>
+        <div class="property-details">
+            <h2>{{ villa.first_name }} {{ villa.last_name }}</h2>
+            <p>Email: {{ villa.email }}</p>
+            <p>Phone: {{ villa.phone }}</p>
+            <p>Location: {{ villa.location }}</p>
+            <p>Property Type: {{ villa.property_type }}</p>
+            <p>Rooms: {{ villa.rooms }}</p>
+            <p>Heard About: {{ villa.heard_about }}</p>
+            <p>Description: {{ villa.description }}</p>
+            
+            {% if villa.link %}
+            <p>Link: <a href="{{ villa.link }}" target="_blank">{{ villa.link }}</a></p>
+            {% endif %}
+            
+            <div class="property-photos">
+                <h3>Photos:</h3>
+                {% for photo in villa.photos %}
+                    <img src="{{ url_for('static', filename='villa_photos_of_customer/' ~ photo.filename) }}" alt="Property Photo">
+                {% endfor %}
+            </div>
+        </div>
+        
+        <a href="{{ url_for('view_properties') }}">Back to Properties</a>
+    </div>
+</body>
+</html>

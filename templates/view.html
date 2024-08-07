@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guest Information</title>
+    <style>
+        body {
+            font-family: 'Heebo', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ECF0F1;
+            color: #2C3E50;
+        }
+        h2 {
+            text-align: center;
+            padding: 20px 0;
+            color: #2C3E50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #2C3E50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+            transition: background-color 0.3s ease;
+        }
+        .back-btn {
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #18BC9C;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 5px;
+            display: block;
+            width: fit-content;
+            transition: background-color 0.3s ease;
+        }
+        .back-btn:hover {
+            background-color: #16A085;
+        }
+        @media (max-width: 768px) {
+            table, th, td {
+                display: block;
+            }
+            th, td {
+                padding: 10px;
+                text-align: right;
+                position: relative;
+            }
+            th::before, td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                text-align: left;
+                font-weight: bold;
+            }
+            th {
+                background-color: #2C3E50;
+                color: white;
+            }
+            tr {
+                display: block;
+                margin-bottom: 10px;
+            }
+            tr:nth-child(even) {
+                background-color: transparent;
+            }
+            tr:hover {
+                background-color: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Guest Information</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Place</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Adults</th>
+                <th>Children</th>
+                <th>Infants</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plan in plans %}
+            <tr>
+                <td data-label="ID">{{ plan[0] }}</td>
+                <td data-label="Name">{{ plan[1] }}</td>
+                <td data-label="Email">{{ plan[2] }}</td>
+                <td data-label="Mobile">{{ plan[3] }}</td>
+                <td data-label="Place">{{ plan[4] }}</td>
+                <td data-label="Check-in">{{ plan[5] }}</td>
+                <td data-label="Check-out">{{ plan[6] }}</td>
+                <td data-label="Adults">{{ plan[7] }}</td>
+                <td data-label="Children">{{ plan[8] }}</td>
+                <td data-label="Infants">{{ plan[9] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/" class="back-btn">Back to Admin Dashboard</a>
+</body>
+</html>

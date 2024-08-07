@@ -1,0 +1,178 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.login-button-container {
+    text-align: right;
+    padding: 1em;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+}
+
+.login-button-container button {
+    padding: 0.5em 1em;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+header {
+    background-color: #333;
+    color: #ccc;
+    padding: 1em 0;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px; 
+    margin: 0 auto;
+}
+
+.navbar-nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.navbar-nav li {
+    margin-left: 20px; 
+}
+
+.navbar-nav li a {
+    text-decoration: none;
+    color: inherit; 
+    transition: color 0.3s ease, transform 0.3s ease; 
+}
+
+.navbar-nav li a:hover {
+    color: #fff; 
+    transform: scale(2); 
+}
+
+main {
+    padding: 2em;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.login-switch {
+    margin-top: 1em;
+    text-align: center;
+}
+
+.login-switch .login-tab {
+    margin: 0 1em;
+    text-decoration: none;
+    color: #333;
+    font-weight: normal;
+}
+
+.login-switch .login-tab.active {
+    font-weight: bold;
+    color: #000;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-content form label,
+.modal-content form input,
+.modal-content form button {
+    width: 100%;
+    margin: 0.5em 0;
+}
+
+.modal-content form input {
+    padding: 0.5em;
+}
+
+.modal-content form button {
+    padding: 0.5em;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.carousel-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.carousel {
+    display: flex;
+    overflow: hidden;
+    width: 300px; 
+    transition: transform 0.5s ease;
+}
+
+.carousel-item {
+    min-width: 300px; 
+    margin: 5px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.carousel-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.carousel-button:hover {
+    background-color: #0056b3;
+}
+
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
