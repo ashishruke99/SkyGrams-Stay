@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from config import Config
 from forms import VillaForm
 from models import db, Villa, Photo
-from models import db, Property, PropertyImage, Amenity, MealOption, Room, FAQ, DailyPrice
+from models import db, Property, PropertyImage, Amenity, MealOption, Room, FAQ, DailyPrice, Review
 import sqlite3
 import os
 from flask_sqlalchemy import SQLAlchemy
@@ -363,6 +363,8 @@ def submitP():
             guest_capacity = request.form['guest_capacity']
             room_count = request.form['room_count']
             baths = request.form['baths']
+            rating = request.form['rating']
+            rule = request.form['rule']
             great_for = request.form['great_for']
             price = request.form['price']
             highlights = request.form['highlights']
@@ -383,6 +385,8 @@ def submitP():
                 guest_capacity=guest_capacity,
                 room_count=room_count,
                 baths=baths,
+                rating=rating,
+                rule=rule,
                 great_for=great_for,
                 price=price,
                 highlights=highlights,
@@ -435,13 +439,26 @@ def submitP():
                 new_faq = FAQ(property_id=new_property.id, question=question, answer=answer)
                 db.session.add(new_faq)
 
+                        # Handle multiple reviews
+            user_names = request.form.getlist('user_name[]')
+            comments = request.form.getlist('comment[]')
+            ratings = request.form.getlist('rating[]')
+            for user_name, comment, rating in zip(user_names, comments, ratings):
+                new_review = Review(
+                    property_id=new_property.id,
+                    user_name=user_name,
+                    comment=comment,
+                    rating=rating
+                )
+                db.session.add(new_review)
+
             db.session.commit()
             flash('Property added successfully!', 'success')
             return redirect(url_for('Customer_properties'))
         except Exception as e:
             db.session.rollback()
             flash(f"An error occurred: {e}", 'error')
-            return redirect(url_for('our_destination'))
+            return redirect(url_for('admin_dashboard'))
 
 @app.route('/Customer_properties', methods=['GET', 'POST'])
 def Customer_properties():
@@ -543,7 +560,6 @@ def update_price():
     return jsonify({"status": "success"})
 
 @app.route('/calculate_total', methods=['POST'])
-
 def calculate_total():
     data = request.json
     property_id = data['property_id']
@@ -574,7 +590,6 @@ def calculate_total():
     return jsonify({"status": "success", "total_amount": total_amount})
 
 @app.route('/charge', methods=['POST'])
-
 def charge():
     data = request.json
     payment_id = data['razorpay_payment_id']
@@ -645,6 +660,27 @@ def toggle_favorite():
 def gallery(property_id):
     property = Property.query.get_or_404(property_id)
     return render_template('gallery.html', property=property)
+
+@app.route('/delete_property', methods=['GET', 'POST'])
+def delete_property():
+    if request.method == 'POST':
+        try:
+            property_id = request.form['property_id']
+            property_to_delete = db.session.get(Property, property_id)
+            if property_to_delete:
+                db.session.delete(property_to_delete)
+                db.session.commit()
+                flash('Property deleted successfully!', 'success')
+            else:
+                flash('Property not found!', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An error occurred: {e}", 'error')
+        return redirect(url_for('delete_property'))
+
+    properties = db.session.query(Property).all()
+    return render_template('delete_property.html', properties=properties)
+
 if __name__ == '__main__':
     init_db()  # Ensure the database is initialized
     app.run(debug=True)
